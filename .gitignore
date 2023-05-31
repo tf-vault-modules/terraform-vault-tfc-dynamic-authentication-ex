@@ -33,6 +33,7 @@ node_modules
 .history
 *.auto.tfvars
 !test.auto.tfvars
+!example.auto.tfvars
 sample.json
 *.stackdump
 test/go.sum

@@ -1,15 +1,30 @@
 #------------------------------------------------------------------------------
 # Vend TFC JWT auth method in the namespace for TFC Workspace
 #------------------------------------------------------------------------------
-resource "vault_jwt_auth_backend" "tfc" {
-  for_each = toset(local.namespaces)
+resource "vault_jwt_auth_backend" "this" {
+  for_each = local.backends
 
-  namespace = each.value
+  namespace = each.value.vault_namespace
 
-  path               = var.tfc_jwt_auth_default_path
+  path               = each.value.vault_auth_mount
   type               = "jwt"
-  oidc_discovery_url = "https://app.terraform.io"
-  bound_issuer       = "https://app.terraform.io"
+  oidc_discovery_url = var.auth_token_issuer
+  bound_issuer       = var.auth_token_issuer
+
+  dynamic "tune" {
+    for_each = var.auth_mount_tune != null ? [var.auth_mount_tune] : []
+
+    content {
+      default_lease_ttl            = tune.value.default_lease_ttl
+      max_lease_ttl                = tune.value.max_lease_ttl
+      audit_non_hmac_response_keys = tune.value.audit_non_hmac_response_keys
+      audit_non_hmac_request_keys  = tune.value.audit_non_hmac_request_keys
+      listing_visibility           = tune.value.listing_visibility
+      passthrough_request_headers  = tune.value.passthrough_request_headers
+      allowed_response_headers     = tune.value.allowed_response_headers
+      token_type                   = tune.value.token_type
+    }
+  }
 
   depends_on = [
 
@@ -18,10 +33,10 @@ resource "vault_jwt_auth_backend" "tfc" {
 }
 
 resource "vault_jwt_auth_backend_role" "this" {
-  for_each = local.workspaces
+  for_each = local.roles
 
   namespace = each.value.vault_namespace
-  backend   = vault_jwt_auth_backend.tfc[each.value.vault_namespace_key].path
+  backend   = vault_jwt_auth_backend.this[each.value.vault_auth_mount_key].path
   role_name = each.value.vault_role_name
 
   role_type = "jwt"
@@ -29,24 +44,25 @@ resource "vault_jwt_auth_backend_role" "this" {
   # more elevated permissions
   token_policies = each.value.vault_token_policies
 
-  bound_audiences   = ["vault.workload.identity"]
+  bound_audiences   = var.bound_audiences
   bound_claims_type = "glob"
+  user_claim        = each.value.user_claim
 
   bound_claims = {
-    sub                       = "organization:${each.value.tfc_organization_name}:project:${each.value.tfc_project_name}:workspace:${each.value.tfc_workspace_name}:run_phase:*"
-    terraform_organization_id = each.value.tfc_organization_id
-    terraform_project_id      = each.value.tfc_project_id
-    terraform_workspace_id    = each.value.tfc_workspace_id
+    sub                       = "organization:${each.value.claim_organization_part}:project:${each.value.claim_project_part}:workspace:${each.value.claim_workspace_part}:run_phase:*"
+
+    terraform_organization_id = try(each.value.tfc_organization_id, null)
+    terraform_project_id      = try(each.value.tfc_project_id, null)
+    terraform_workspace_id    = try(each.value.tfc_workspace_id, null)
   }
 
-  user_claim        = "terraform_full_workspace"
-  token_ttl         = each.value.token_ttl
-  token_max_ttl     = each.value.token_max_ttl
-  token_num_uses    = each.value.token_num_uses
-  token_type        = each.value.token_type
-  token_bound_cidrs = each.value.token_bound_cidrs
+  token_ttl         = try(each.value.token_ttl, var.default_token_ttl)
+  token_max_ttl     = try(each.value.token_max_ttl, var.default_token_max_ttl)
+  token_num_uses    = try(each.value.token_num_uses, var.default_token_num_uses)
+  token_type        = try(each.value.token_type, var.default_token_type)
+  token_bound_cidrs = try(each.value.token_bound_cidrs, var.default_token_bound_cidrs)
 
   depends_on = [
-    vault_jwt_auth_backend.tfc
+    vault_jwt_auth_backend.this
   ]
 }

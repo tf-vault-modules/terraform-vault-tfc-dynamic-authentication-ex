@@ -2,7 +2,7 @@
 resource "vault_identity_entity" "this" {
   for_each = local.workspaces
 
-  name      = each.value.tfc_workspace_name
+  name      = each.value.vault_entity_name
   namespace = each.value.vault_namespace
 
   policies = ["tfc-workspace-policy"]
@@ -15,9 +15,9 @@ resource "vault_identity_entity" "this" {
 resource "vault_identity_entity_alias" "this" {
   for_each = local.workspaces
 
-  name      = each.value.tfc_workspace_entity_alias
+  name      = each.value.vault_entity_alias
   namespace = each.value.vault_namespace
 
-  mount_accessor = vault_jwt_auth_backend.tfc[each.value.vault_namespace_key].accessor
+  mount_accessor = vault_jwt_auth_backend.this[each.value.vault_auth_mount_key].accessor
   canonical_id   = vault_identity_entity.this[each.key].id
 }

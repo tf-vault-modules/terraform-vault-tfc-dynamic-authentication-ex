@@ -18,7 +18,7 @@ func TestTerraform(t *testing.T) {
 
 		// 		Variables to pass to our Terraform code using -var options
 		// 		Vars: map[string]interface{}{},
-		// Targets: []string{"module.vault_tfc_backends.vault_jwt_auth_backend.tfc"},
+		// Targets: []string{"module.vault_tfc_backends.vault_jwt_auth_backend.this"},
 		// Variables to pass to our Terraform code using -var-file options
 		//Uncomment VarFiles line below if you need to test locally.
 		VarFiles: []string{"test.tfvars"},

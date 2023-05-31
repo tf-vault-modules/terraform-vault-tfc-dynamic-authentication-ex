@@ -1,4 +1,4 @@
-module dnb.com/terratest
+module terratest
 
 go 1.16
 
