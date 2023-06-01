@@ -7,12 +7,12 @@ tfc_shared_roles = [
     "vault_token_policies" : ["default"],
     "vault_auth_mount" : "jwt-tfc-ex",
 
-    tfc_organization_id: "org-wsG7g1dsNtVNFx7t"
-    
+    tfc_organization_id : "org-wsG7g1dsNtVNFx7t"
+
     # claim
-    claim_organization_part: "mag"
-    claim_project_part: "*"
-    claim_workspace_part: "*"
+    claim_organization_part : "mag"
+    claim_project_part : "*"
+    claim_workspace_part : "*"
 
     tfc_workspace_ids = ["ws-BkNVuSbuMHwYErEj"]
   },
@@ -23,12 +23,12 @@ tfc_shared_roles = [
     "vault_token_policies" : ["default"],
     "vault_auth_mount" : "jwt-tfc1",
 
-    tfc_organization_id: "org-wsG7g1dsNtVNFx7t"
-    
+    tfc_organization_id : "org-wsG7g1dsNtVNFx7t"
+
     # claim
-    claim_organization_part: "mag"
-    claim_project_part: "*"
-    claim_workspace_part: "*"
+    claim_organization_part : "mag"
+    claim_project_part : "*"
+    claim_workspace_part : "*"
 
     # tfc_workspace_ids = ["*"]
   }
@@ -37,64 +37,79 @@ tfc_shared_roles = [
 tfc_workspaces = [
 
   {
-    vault_role_name: "default_project2"
-    vault_auth_mount: "jwt-tfc"
-    entity_name: "workspace-ws-name-1",
+    vault_role_name : "test-project"
+    vault_auth_mount : "jwt-tfc"
+    entity_name : "workspace-testing-workspace",
 
-    tfc_organization_id: "sample-org-ir",
-    tfc_organization_name: "sample-org",
-    tfc_project_id: "tfc-project-id",
-    tfc_project_name: "Default Project",
-    tfc_workspace_id: "workspace1",
-    tfc_workspace_name: "ws-name-1",
-
-    vault_namespace = "root"
-    vault_token_policies: ["tfc-workspace-policy"],
-  },
-  {
-    vault_role_name: "default_project4"
-    vault_auth_mount: "jwt-tfc"
-    entity_name: "workspace-ws-name-2",
-
-    tfc_organization_id: "sample-org-ir",
-    tfc_organization_name: "sample-org",
-    tfc_project_id: "tfc-project-id",
-    tfc_project_name: "Default Project",
-    tfc_workspace_id: "workspace2",
-    tfc_workspace_name: "ws-name-2",
+    tfc_organization_id : "org-wsG7g1dsNtVNFx7t",
+    tfc_organization_name : "mag",
+    tfc_project_id : "prj-tmz7qYScuH1F9p9b",
+    tfc_project_name : "tfc-module",
+    tfc_workspace_id : "ws-nuR2u5ELwLsiBWoB",
+    tfc_workspace_name : "testing-tfc",
 
     vault_namespace = "root"
-    vault_token_policies: ["tfc-workspace-policy"],
+    vault_token_policies : ["tfc-workspace-policy"],
   },
   {
-    vault_role_name: "default_project3"
-    vault_auth_mount: "jwt-tfc-ws"
-    entity_name: "workspace-ws-name-1",
+    vault_role_name : "default_project2"
+    vault_auth_mount : "jwt-tfc"
+    entity_name : "workspace-ws-name-1",
 
-    tfc_organization_id: "sample-org-ir",
-    tfc_organization_name: "sample-org",
-    tfc_project_id: "tfc-project-id",
-    tfc_project_name: "Default Project",
-    tfc_workspace_id: "workspace3",
-    tfc_workspace_name: "ws-name-3",
+    tfc_organization_id : "sample-org-ir",
+    tfc_organization_name : "sample-org",
+    tfc_project_id : "tfc-project-id",
+    tfc_project_name : "Default Project",
+    tfc_workspace_id : "workspace1",
+    tfc_workspace_name : "ws-name-1",
 
     vault_namespace = "root"
-    vault_token_policies: ["tfc-workspace-policy"],
+    vault_token_policies : ["tfc-workspace-policy"],
   },
   {
-    vault_role: "default_project1"
-    vault_namespace: "root"
-    vault_auth_mount: "jwt-tfc"
-    entity_name: "workspace-ws-name-4",
+    vault_role_name : "default_project4"
+    vault_auth_mount : "jwt-tfc"
+    entity_name : "workspace-ws-name-2",
 
-    tfc_organization_id: "sample-org-ir",
-    tfc_organization_name: "sample-org",
-    tfc_project_id: "tfc-project-id",
-    tfc_project_name: "Default Project",
-    tfc_workspace_id: "workspace4",
-    tfc_workspace_name: "ws-name-4",
+    tfc_organization_id : "sample-org-ir",
+    tfc_organization_name : "sample-org",
+    tfc_project_id : "tfc-project-id",
+    tfc_project_name : "Default Project",
+    tfc_workspace_id : "workspace2",
+    tfc_workspace_name : "ws-name-2",
 
-    
-    vault_token_policies: ["tfc-workspace-policy"],
+    vault_namespace = "root"
+    vault_token_policies : ["tfc-workspace-policy"],
+  },
+  {
+    vault_role_name : "default_project3"
+    vault_auth_mount : "jwt-tfc-ws"
+    entity_name : "workspace-ws-name-1",
+
+    tfc_organization_id : "sample-org-ir",
+    tfc_organization_name : "sample-org",
+    tfc_project_id : "tfc-project-id",
+    tfc_project_name : "Default Project",
+    tfc_workspace_id : "workspace3",
+    tfc_workspace_name : "ws-name-3",
+
+    vault_namespace = "root"
+    vault_token_policies : ["tfc-workspace-policy"],
+  },
+  {
+    vault_role : "default_project1"
+    vault_namespace : "root"
+    vault_auth_mount : "jwt-tfc"
+    entity_name : "workspace-ws-name-4",
+
+    tfc_organization_id : "sample-org-ir",
+    tfc_organization_name : "sample-org",
+    tfc_project_id : "tfc-project-id",
+    tfc_project_name : "Default Project",
+    tfc_workspace_id : "workspace4",
+    tfc_workspace_name : "ws-name-4",
+
+
+    vault_token_policies : ["tfc-workspace-policy"],
   }
 ]

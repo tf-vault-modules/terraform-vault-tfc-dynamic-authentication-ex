@@ -1,38 +1,40 @@
 variable "tfc_shared_roles" {
+  default = []
   type = list(object({
-    vault_namespace = optional(string)
-    vault_token_policies = list(string)
-    vault_auth_mount = optional(string)
-    tfc_organization_name = optional(string)
-    tfc_project_name = optional(string)
-    tfc_workspace_name = optional(string)
-    tfc_organization_id = optional(string)
-    tfc_project_id = optional(string)
-    tfc_workspace_ids = optional(list(string))
-    claim_project_part = optional(string)
+    vault_namespace         = optional(string)
+    vault_token_policies    = list(string)
+    vault_auth_mount        = optional(string)
+    tfc_organization_name   = optional(string)
+    tfc_project_name        = optional(string)
+    tfc_workspace_name      = optional(string)
+    tfc_organization_id     = optional(string)
+    tfc_project_id          = optional(string)
+    tfc_workspace_ids       = optional(list(string))
+    claim_project_part      = optional(string)
     claim_organization_part = optional(string)
-    claim_workspace_part = optional(string)
-    user_claim = optional(string)
-    vault_role_name = optional(string)
-    vault_role = optional(string)
+    claim_workspace_part    = optional(string)
+    user_claim              = optional(string)
+    vault_role_name         = optional(string)
+    vault_role              = optional(string)
   }))
   description = "List of shared roles"
 }
 variable "tfc_workspaces" {
+  default = []
   type = list(object({
-    vault_namespace = string
-    vault_token_policies = list(string)
-    vault_auth_mount = optional(string)
+    vault_namespace       = string
+    vault_token_policies  = list(string)
+    vault_auth_mount      = optional(string)
     tfc_organization_name = optional(string)
-    tfc_project_name = optional(string)
-    tfc_workspace_name = optional(string)
-    tfc_organization_id = optional(string)
-    tfc_project_id = optional(string)
-    tfc_workspace_id = optional(string)
-    claim_workspace_part = optional(string)
-    user_claim = optional(string)
-    vault_role_name = optional(string)
-    vault_role = optional(string)
+    tfc_project_name      = optional(string)
+    tfc_workspace_name    = optional(string)
+    tfc_organization_id   = optional(string)
+    tfc_project_id        = optional(string)
+    tfc_workspace_id      = optional(string)
+    claim_workspace_part  = optional(string)
+    user_claim            = optional(string)
+    vault_role_name       = optional(string)
+    vault_role            = optional(string)
   }))
   description = "List of Terraform cloud workspaces to be authorized"
 }
@@ -118,6 +120,20 @@ variable "claim_mappings" {
 }
 
 # default values
+
+variable "default_vault_address" {
+  default     = "http://localhost:8200"
+  description = "Default Vault address"
+}
+
+variable "default_vault_token" {
+  default     = "root"
+  description = "Default Vault token"
+}
+variable "default_token_display_name" {
+  default     = "tfc-auth-vending-admin"
+  description = "Vault Token display name"
+}
 
 variable "default_token_ttl" {
   default     = 60

@@ -49,7 +49,7 @@ resource "vault_jwt_auth_backend_role" "this" {
   user_claim        = each.value.user_claim
 
   bound_claims = {
-    sub                       = "organization:${each.value.claim_organization_part}:project:${each.value.claim_project_part}:workspace:${each.value.claim_workspace_part}:run_phase:*"
+    sub = "organization:${each.value.claim_organization_part}:project:${each.value.claim_project_part}:workspace:${each.value.claim_workspace_part}:run_phase:*"
 
     terraform_organization_id = try(each.value.tfc_organization_id, null)
     terraform_project_id      = try(each.value.tfc_project_id, null)
