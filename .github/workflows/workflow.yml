@@ -3,6 +3,10 @@ on:
   - push
 
 jobs:
+  ci:
+    uses: https://github.com/myros/shared-workflows/tree/main/.github/workflows/terraform.yaml@main
+    with:
+      upload_sarif: true
   docs:
     runs-on: ubuntu-latest
     steps:
