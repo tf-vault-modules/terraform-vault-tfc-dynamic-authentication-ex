@@ -4,7 +4,7 @@ on:
 
 jobs:
   ci:
-    uses: myros/shared-workflows/tree/main/.github/workflows/terraform.yaml@main
+    uses: myros/shared-workflows/.github/workflows/terraform.yaml@main
     with:
       upload_sarif: true
   docs:
