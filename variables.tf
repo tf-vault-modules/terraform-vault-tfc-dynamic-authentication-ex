@@ -16,6 +16,7 @@ variable "tfc_shared_roles" {
     user_claim              = optional(string)
     vault_role_name         = optional(string)
     vault_role              = optional(string)
+    quota                 = optional(map(any))
   }))
   description = "List of shared roles"
 }
@@ -35,6 +36,7 @@ variable "tfc_workspaces" {
     user_claim            = optional(string)
     vault_role_name       = optional(string)
     vault_role            = optional(string)
+    quota                 = optional(map(any))
   }))
   description = "List of Terraform cloud workspaces to be authorized"
 }
@@ -66,11 +68,11 @@ variable "auth_mount_tune" {
   type = object({
     default_lease_ttl            = optional(string)
     max_lease_ttl                = optional(string)
-    audit_non_hmac_response_keys = optional(string)
-    audit_non_hmac_request_keys  = optional(string)
+    audit_non_hmac_response_keys = optional(list(string))
+    audit_non_hmac_request_keys  = optional(list(string))
     listing_visibility           = optional(string)
-    passthrough_request_headers  = optional(string)
-    allowed_response_headers     = optional(string)
+    passthrough_request_headers  = optional(list(string))
+    allowed_response_headers     = optional(list(string))
     token_type                   = optional(string)
   })
 }
@@ -164,4 +166,28 @@ variable "identity_name_format" {
   description = "Identity name format string. Will look like tfc-organization-workspace_name"
   type        = string
   default     = "tfc-%[1]s-%[2]s-%[3]s"
+}
+
+variable "default_max_leases" {
+  default = "100"
+  type = number
+  description = "The maximum number of leases to be allowed by the quota rule. The max_leases must be positive."
+}
+
+variable "default_rate_limit_rate" {
+  default = "10"
+  type = number
+  description = "The maximum number of requests at any given second to be allowed by the quota rule. The rate must be positive."
+}
+
+variable "default_rate_limit_interval" {
+  default = "1"
+  type = number
+  description = "The duration in seconds to enforce rate limiting for"
+}
+
+variable "default_rate_limit_block_interval" {
+  default = "10"
+  type = number
+  description = "If set, when a client reaches a rate limit threshold, the client will be prohibited from any further requests until after the 'block_interval' in seconds has elapsed."
 }

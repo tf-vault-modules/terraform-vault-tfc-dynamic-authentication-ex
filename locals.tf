@@ -5,45 +5,65 @@ locals {
 
   backends = {
     for r in distinct([
-      for role in local.roles :
+      for item in local.roles :
       {
-        vault_namespace  = role.vault_namespace
-        vault_auth_mount = role.vault_auth_mount
-        key              = "${role.vault_namespace}/${role.vault_auth_mount}"
+        vault_namespace  = item.vault_namespace
+        vault_auth_mount = item.vault_auth_mount
+        key              = "${item.vault_namespace}/${item.vault_auth_mount}"
+
+        # quotas
+        enable_quota = try(item.quota, null) != null ? true : false
+        quota_path = "${coalesce(var.auth_mount_path, "tfc")}-${item.vault_role_name}"
+
+        max_leases = try(item.quota.max_leases, var.default_max_leases)
+        rate = try(item.quota.default_rate_limit_rate, var.default_rate_limit_rate)
+        interval = try(item.quota.default_rate_limit_interval, var.default_rate_limit_interval)
+        block_interval = try(item.quota.default_rate_limit_block_interval, var.default_rate_limit_block_interval)
       }
     ]) : r.key => r
   }
 
   shared_roles = {
     for r in distinct([
-      for role in var.tfc_shared_roles : {
-        vault_namespace      = role.vault_namespace
-        vault_token_policies = role.vault_token_policies
-        vault_auth_mount     = role.vault_auth_mount
-        vault_role_name      = role.vault_role_name
-        vault_namespace_key  = role.vault_namespace
-        vault_auth_mount_key = "${role.vault_namespace}/${role.vault_auth_mount}"
+      for item in var.tfc_shared_roles : {
+        vault_namespace      = item.vault_namespace
+        vault_token_policies = item.vault_token_policies
+        vault_auth_mount     = item.vault_auth_mount
+        vault_role_name      = item.vault_role_name
+        vault_namespace_key  = item.vault_namespace
+        vault_auth_mount_key = "${item.vault_namespace}/${item.vault_auth_mount}"
+        vault_role_path = "${coalesce(item.vault_auth_mount, "tfc")}/${item.vault_role_name}"
 
-        user_claim              = coalesce(role.user_claim, var.default_user_claim)
-        claim_organization_part = role.claim_organization_part
-        claim_project_part      = role.claim_project_part
-        claim_workspace_part    = role.claim_workspace_part
+        user_claim              = coalesce(item.user_claim, var.default_user_claim)
+        claim_organization_part = item.claim_organization_part
+        claim_project_part      = item.claim_project_part
+        claim_workspace_part    = item.claim_workspace_part
 
-        tfc_organization_id   = role.tfc_organization_id,
-        tfc_organization_name = role.tfc_organization_name,
-        tfc_project_id        = try(join(", ", role.tfc_project_id), null)
-        tfc_project_name      = role.tfc_project_name
+        tfc_organization_id   = item.tfc_organization_id,
+        tfc_organization_name = item.tfc_organization_name,
+        tfc_project_id        = try(join(", ", item.tfc_project_id), null)
+        tfc_project_name      = item.tfc_project_name
 
-        tfc_workspace_id   = try(join(", ", role.tfc_workspace_ids), null)
-        tfc_workspace_name = role.tfc_workspace_name
+        tfc_workspace_id   = try(join(", ", item.tfc_workspace_ids), null)
+        tfc_workspace_name = item.tfc_workspace_name
 
-        key = "${role.vault_namespace}/${role.vault_auth_mount}/${role.vault_role_name}"
+        # quotas
+        enable_quota = try(item.quota, null) != null ? true : false
+        quota_path = "${coalesce(var.auth_mount_path, "tfc")}-${item.vault_role_name}"
+
+        max_leases = try(item.quota.max_leases, var.default_max_leases)
+        rate = try(item.quota.default_rate_limit_rate, var.default_rate_limit_rate)
+        interval = try(item.quota.default_rate_limit_interval, var.default_rate_limit_interval)
+        block_interval = try(item.quota.default_rate_limit_block_interval, var.default_rate_limit_block_interval)
+        
+        key = "${item.vault_namespace}/${item.vault_auth_mount}/${item.vault_role_name}"
     }]) : r.key => r
   }
 
   workspaced_roles = ({
     for item in var.tfc_workspaces : "${coalesce(item.vault_namespace, "root")}/${coalesce(item.vault_auth_mount, "tfc")}/${item.vault_role_name}" => {
       vault_role_name      = coalesce(item.vault_role_name, item.vault_role)
+      vault_role_path = "${coalesce(item.vault_auth_mount, "tfc")}/${item.vault_role_name}"
       vault_namespace      = item.vault_namespace
       vault_token_policies = item.vault_token_policies
       vault_auth_mount     = item.vault_auth_mount
@@ -72,6 +92,16 @@ locals {
       token_num_uses    = try(item.token_num_uses, var.default_token_num_uses)
       token_type        = try(item.token_type, var.default_token_type)
       token_bound_cidrs = try(item.token_bound_cidrs, var.default_token_bound_cidrs)
+
+      # quotas
+      enable_quota = try(item.quota, null) != null ? true : false
+      quota_path = "${coalesce(var.auth_mount_path, "tfc")}-${item.vault_role_name}"
+
+      max_leases = try(item.quota.max_leases, var.default_max_leases)
+      rate = try(item.quota.default_rate_limit_rate, var.default_rate_limit_rate)
+      interval = try(item.quota.default_rate_limit_interval, var.default_rate_limit_interval)
+      block_interval = try(item.quota.default_rate_limit_block_interval, var.default_rate_limit_block_interval)
+
     } if item.vault_role_name != null
   })
 
@@ -91,7 +121,6 @@ locals {
         vault_namespace      = item.vault_namespace
         vault_namespace_key  = item.vault_namespace
         vault_auth_mount_key = "${item.vault_namespace}/${item.vault_auth_mount}"
-
 
         # vault_role_name      = coalesce(item.tfc_vault_run_role, "${item.tfc_workspace_name}-${item.tfc_workspace_id}")
 

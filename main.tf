@@ -66,3 +66,19 @@ resource "vault_jwt_auth_backend_role" "this" {
     vault_jwt_auth_backend.this
   ]
 }
+
+resource "vault_quota_rate_limit" "role" {
+  for_each = {
+    for key, item in local.roles : key => item
+    if item.enable_quota
+  }
+
+  namespace = var.vault_namespace
+  name = each.value.quota_path
+
+  path = "auth/${each.value.vault_role_path}"
+
+  rate = each.value.rate
+  interval = each.value.interval
+  block_interval = each.value.block_interval
+}
