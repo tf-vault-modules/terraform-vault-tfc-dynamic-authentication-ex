@@ -69,7 +69,7 @@ resource "vault_jwt_auth_backend_role" "this" {
 
 resource "vault_quota_rate_limit" "role" {
   for_each = {
-    for key, item in local.roles : key => item
+    for key, item in local.workspaced_roles : key => item
     if item.enable_quota
   }
 
@@ -81,4 +81,6 @@ resource "vault_quota_rate_limit" "role" {
   rate = each.value.rate
   interval = each.value.interval
   block_interval = each.value.block_interval
+
+  depends_on = [ vault_jwt_auth_backend_role.this ]
 }
